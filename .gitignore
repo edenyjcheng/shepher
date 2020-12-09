@@ -5,3 +5,6 @@ release
 logs
 .arcconfig
 *.xml.versionsBackup
+.settings/
+.project
+**/.classpath

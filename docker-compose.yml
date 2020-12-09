@@ -1,11 +1,20 @@
 version: '2'
 services:
   db: 
-    image: mysql
+    #image: mysql:5.6
+    #container_name: shepher-db
+    #restart: always
+    build: ./db
+    image: shepher-db
     environment:
       MYSQL_ROOT_PASSWORD: root
-    volumes:
-      - ./db:/docker-entrypoint-initdb.d
+      MYSQL_DATABASE: shepher
+    ports:
+      - "3306:3306"
+    #volumes:
+      #- ./db:/docker-entrypoint-initdb.d/
+      #- ./db:/temp/database
+      #command: mysqld --init-file="/tmp/database/init.sql" 
   web:
     build: ./
     image: shepher
@@ -14,10 +23,16 @@ services:
     depends_on:
        - db
        - zookeeper
-    links:
-       - db
+    environment:  # Set up environment variables
+      MYSQL_DATABASE: shepher
+      MYSQL_ROOT_PASSWORD: root
+      RAILS_ENV: docker
+    #links:
+    #   - db
   zookeeper:
     image: zookeeper
+    ports:
+       - "2181:2181"
     expose:
        - 2181
        - 2888
